@@ -1,0 +1,56 @@
+{
+ "records": [
+   {
+     "id":"externalDataReference",
+     "options" : [{"value":"IUCN","label":"IUCN"},
+                  {"value":"Other","label":"Other"}
+                ]
+   },
+   {
+     "id":"inspireA_I",
+     "options" : [{"value":"Addresses","label":"Addresses"},
+                  {"value":"Administrative Units","label":"Administrative Units"},
+                  {"value":"Cadastral parcels","label":"Cadastral parcels"},
+                  {"value":"Coordinate reference systems","label":"Coordinate reference systems"},
+                  {"value":"Geographical grid systems","label":"Geographical grid systems"},
+                  {"value":"Geographical names","label":"Geographical names"},
+                  {"value":"Hydrography","label":"Hydrography"},
+                  {"value":"Protected sites","label":"Protected sites"},
+                  {"value":"Transport networks","label":"Transport networks"}
+                ]
+   },
+   {
+     "id":"inspireA_II",
+     "options" : [{"value":"Elevation","label":"Elevation"},
+                  {"value":"Geology","label":"Geology"},
+                  {"value":"Land cover","label":"Land cover"},
+                  {"value":"Orthoimagery","label":"Orthoimagery"}
+                ]
+   },
+   {
+     "id":"inspireA_III",
+     "options" : [{"value":"Agricultural and aquaculture facilities", "label":"Agricultural and aquaculture facilities"},
+                  {"value":"Area management / restriction / regulation zones & reporting units", "label":"Area management / restriction / regulation zones & reporting units"},
+                  {"value":"Atmospheric conditions", "label":"Atmospheric conditions"},
+                  {"value":"Bio-geographical regions", "label":"Bio-geographical regions"},
+                  {"value":"Buildings", "label":"Buildings"},
+                  {"value":"Energy Resources", "label":"Energy Resources"},
+                  {"value":"Environmental monitoring Facilities", "label":"Environmental monitoring Facilities"},
+                  {"value":"Habitats and biotopes", "label":"Habitats and biotopes"},
+                  {"value":"Human health and safety", "label":"Human health and safety"},
+                  {"value":"Land use", "label":"Land use"},
+                  {"value":"Meteorological geographical features", "label":"Meteorological geographical features"},
+                  {"value":"Mineral Resources", "label":"Mineral Resources"},
+                  {"value":"Natural risk zones", "label":"Natural risk zones"},
+                  {"value":"Oceanographic geographical features", "label":"Oceanographic geographical features"},
+                  {"value":"Population distribution and demography", "label":"Population distribution and demography"},
+                  {"value":"Production and industrial facilities", "label":"Production and industrial facilities"},
+                  {"value":"Sea regions", "label":"Sea regions"},
+                  {"value":"Soil", "label":"Soil"},
+                  {"value":"Species distribution", "label":"Species distribution"},
+                  {"value":"Statistical units", "label":"Statistical units"},
+                  {"value":"Utility and governmental services", "label":"Utility and governmental services"}
+                ]
+   }
+ ]
+}

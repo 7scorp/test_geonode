@@ -1,0 +1,24 @@
+version: '2.2'
+services:
+
+  django:
+    build: .
+    # Loading the app is defined here to allow for
+    # autoreload on changes it is mounted on top of the
+    # old copy that docker added when creating the image
+    volumes:
+      - '/data/geonode_app:/usr/src/app:rw'
+    environment:
+      - DEBUG=True
+      - GEONODE_LB_HOST_IP=geonode-rris.biopama.org
+      - GEONODE_LB_PORT=443
+      - SITEURL=https://geonode-rris.biopama.org/
+      - ALLOWED_HOSTS=['localhost', 'geonode-rris.biopama.org', 'h05-stg-vm14.jrc.it' ]
+      - GEOSERVER_PUBLIC_LOCATION=https://geonode-rris.biopama.org/geoserver/
+      - GEOSERVER_WEB_UI_LOCATION=https://geonode-rris.biopama.org/geoserver/
+      - SITE_HOST_SCHEMA=https
+
+  geoserver:
+    environment:
+      - GEONODE_LB_HOST_IP=geonode-rris.biopama.org
+      - GEONODE_LB_PORT=443

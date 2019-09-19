@@ -1,0 +1,102 @@
+version: '2.2'
+services:
+
+  geoserver:
+    image: geonode/geoserver:2.15.2
+    restart: unless-stopped
+    container_name: geoserver4${COMPOSE_PROJECT_NAME}
+    stdin_open: true
+    # tty: true
+    labels:
+        org.geonode.component: geoserver
+        org.geonode.instance.name: geonode
+    depends_on:
+      - data-dir-conf
+    volumes:
+      - /data/geoserver_data:/geoserver_data/data:rw
+    env_file:
+      - ./scripts/docker/env/${SET_DOCKER_ENV}/geoserver.env
+    environment:
+      - GEONODE_LB_HOST_IP=geonode-rris.biopama.org
+      - GEONODE_LB_PORT=443
+
+  django:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile.django.dev
+    restart: unless-stopped
+    image: jrcgeonode:2.10
+    container_name: django4${COMPOSE_PROJECT_NAME}
+    stdin_open: true
+    # tty: true
+    labels:
+        org.geonode.component: django
+        org.geonode.instance.name: geonode
+    depends_on:
+      - data-dir-conf
+    # command: paver start_django -b 0.0.0.0:8000
+    # command: uwsgi --ini uwsgi.ini
+    volumes:
+      - /data/geonode_statics:/mnt/volumes/statics:rw
+      - /data/geoserver_data:/geoserver_data/data:rw
+      - /data/geonode_app:/usr/src/app:rw
+      - /var/log/geonode:/var/log:rw
+    env_file:
+      - ./scripts/docker/env/${SET_DOCKER_ENV}/django.env
+      - ./proxy.env
+    environment:
+      - DEBUG=False
+      - GEONODE_LB_HOST_IP=geonode-rris.biopama.org
+      - GEONODE_LB_PORT=443
+      - SITEURL=https://geonode-rris.biopama.org/
+      - GEOSERVER_LOCATION=http://geoserver4geonode:8080/geoserver/
+      - GEOSERVER_PUBLIC_LOCATION=https://geonode-rris.biopama.org/geoserver/
+      - GEOSERVER_WEB_UI_LOCATION=https://geonode-rris.biopama.org/geoserver/
+      - GEOSERVER_ADMIN_USER=gndadm
+      - GEOSERVER_ADMIN_PASSWORD=RaN6wAGxrSmAEKRu
+      - SITE_HOST_SCHEMA=https
+      - DATABASE_URL=postgresql://d6geonode:Geonode2019!@pgsql-dev2.jrc.it:5432/d6geonode
+      - GEODATABASE_URL=postgis://d6geonode:Geonode2019!@pgsql-dev2.jrc.it:5432/d6geonodegis
+      - DEFAULT_BACKEND_DATASTORE=datastore
+      - ALLOWED_HOSTS=['geonode-rris.biopama.org', 'h05-stg-vm14.ies.jrc.it', 'h05-dev-vm36.ies.jrc.it', 'h05-srv-dbp96.jrc.it', '139.191.147.129', 'pgsql-dev2.jrc.it']
+
+# export ALLOWED_HOSTS="['django', '*', 'geonode-rris.biopama.org', 'geonode-rris.biopama.org:443', 'django', 'geonode']"
+
+  geonode:
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx.prd
+    image: jrcnginx:${SET_DOCKER_ENV}
+    restart: unless-stopped
+    container_name: nginx4${COMPOSE_PROJECT_NAME}
+    stdin_open: true
+    # tty: true
+    labels:
+        org.geonode.component: nginx
+        org.geonode.instance.name: geonode
+    depends_on:
+      - django
+      - geoserver
+    ports:
+      - "80:80"
+    volumes:
+      - /data/geonode_statics:/mnt/volumes/statics:rw
+      - /var/log/nginx:/var/log/nginx:rw
+
+  data-dir-conf:
+    image: geonode/geoserver_data:2.15.2
+    restart: on-failure
+    container_name: gsconf4${COMPOSE_PROJECT_NAME}
+    labels:
+        org.geonode.component: conf
+        org.geonode.instance.name: geonode
+    command: /bin/true
+    volumes:
+      - /data/geoserver_data:/geoserver_data/data:rw
+
+volumes:
+  rabbitmq:
+    name: ${COMPOSE_PROJECT_NAME}-rabbitmq
+
+
+

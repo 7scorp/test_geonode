@@ -1,0 +1,63 @@
+{% extends "layers/layer_base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% load dialogos_tags %}
+{% load agon_ratings_tags %}
+{% load bootstrap_tags %}
+{% load pagination_tags %}
+{% load base_tags %}
+{% load guardian_tags %}
+{% load client_lib_tags %}
+
+{% block title %}{{ resource.title|default:resource.alternate }} — {{ block.super }}{% endblock %}
+
+{% block head %}
+  {% if TWITTER_CARD %}
+    {% include "base/_resourcebase_twittercard.html" %}
+  {% endif %}
+
+  {% if OPENGRAPH_ENABLED %}
+    {% include "base/_resourcebase_opengraph.html" %}
+  {% endif %}
+
+  {% get_layer_style_edit %}
+{{ block.super }}
+{% endblock %}
+
+{% block body_class %}{% trans "layers" %}{% endblock %}
+
+{% block extra_script %}
+<style>
+#goBackToLayer{
+  position:fixed;
+  z-index:10000;
+  top:160px;
+  left:0px;
+  border-radius: 0 5px 5px 0;
+  font-size: 1.5em;
+  opacity:0.5;
+}
+#goBackToLayer #expand-layer-name{
+  display:none;
+}
+#goBackToLayer:hover{
+  opacity:1;
+}
+#goBackToLayer:hover #expand-layer-name{
+  display:inline;
+}
+
+</style>
+<script type="text/javascript">
+var pathArray = window.location.pathname.split('/');
+var layer_name = pathArray[2].split(':')[1];
+var layer = window.location.pathname.split('/').slice(1,-1).join('/');
+var btn = '<a id="goBackToLayer" class="btn btn-success" href="/'+layer+'"><span class="glyphicon glyphicon-fast-backward"></span><span id="expand-layer-name"> Back to Layer: '+layer_name+'</span></a>';
+if (layer_name.length > 0){
+  setTimeout(function(){
+    $('body').append(btn);
+  },1500);
+};
+</script>
+
+{% endblock extra_script %}

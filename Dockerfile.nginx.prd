@@ -1,0 +1,5 @@
+FROM docker.io/geonode/nginx:production
+
+ADD nginx/nginx.conf.prd /etc/nginx/nginx.conf
+
+

@@ -1,0 +1,153 @@
+user  nginx;
+worker_processes  1;
+
+error_log  /var/log/nginx/error.log warn;
+pid        /var/run/nginx.pid;
+
+
+events {
+  worker_connections  1024;
+}
+
+
+http {
+  include       /etc/nginx/mime.types;
+  default_type  application/octet-stream;
+
+  log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                      '$status $body_bytes_sent "$http_referer" '
+                      '"$http_user_agent" "$http_x_forwarded_for"';
+
+  access_log  /var/log/nginx/access.log  main;
+  error_log /var/log/nginx/error.log;
+
+  sendfile        on;
+  #tcp_nopush     on;
+
+  keepalive_timeout  65;
+
+  #gzip  on;
+
+
+  server{
+    listen 80;
+    index index.html index.htm;
+    root   /mnt/volumes/statics/;
+    server_tokens off;
+
+    real_ip_header X-Forwarded-For;
+    set_real_ip_from 139.191.229.250;
+    set_real_ip_from 139.191.229.246;
+    set_real_ip_from 139.191.229.247;
+
+    location /{
+      if ($request_method = OPTIONS) {
+        add_header Access-Control-Allow-Methods "GET, POST, PUT, PATCH, OPTIONS";
+        add_header Access-Control-Allow-Headers "Authorization, Content-Type, Accept";
+        add_header Access-Control-Allow-Credentials true;
+        add_header Content-Length 0;
+        add_header Content-Type text/plain;
+        add_header Access-Control-Max-Age 1728000;
+        return 200;
+      }
+      try_files $uri @django;
+    }
+
+    location @django {
+
+      etag off;
+      expires 0;
+      include uwsgi_params;
+      uwsgi_pass uwsgi://django:8000;
+
+      add_header Access-Control-Allow-Credentials false;
+      add_header Access-Control-Allow-Headers "Content-Type, Accept, Authorization, Origin, User-Agent";
+      add_header Access-Control-Allow-Methods "GET, POST, PUT, PATCH, OPTIONS";
+    }
+
+
+    location ~* /admin/ {
+      allow 139.191.177.171;
+      allow 139.191.170.241;
+      allow 172.0.0.0/8;
+      allow 139.191.147.129;
+      allow 139.191.147.125;
+      deny all;
+
+      if ($request_method = OPTIONS) {
+        add_header Access-Control-Allow-Methods "GET, POST, PUT, PATCH, OPTIONS";
+        add_header Access-Control-Allow-Headers "Authorization, Content-Type, Accept";
+        add_header Access-Control-Allow-Credentials true;
+        add_header Content-Length 0;
+        add_header Content-Type text/plain;
+        add_header Access-Control-Max-Age 1728000;
+        return 200;
+      }
+      try_files $uri @django;
+   
+    }
+
+
+    location /geoserver {
+      etag off;
+      expires 0;
+      proxy_pass http://geoserver:8080/geoserver;
+
+      proxy_redirect     off;
+      proxy_set_header   Host $host;
+      proxy_set_header   X-Real-IP $remote_addr;
+    }
+
+    location /geoserver/web {
+      allow 139.191.177.171;
+      allow 139.191.170.241;
+      allow 172.0.0.0/8;
+      allow 139.191.147.129;
+      allow 139.191.147.125;
+      deny all;
+
+      etag off;
+      expires 0;
+      proxy_pass http://geoserver:8080/geoserver/web;
+
+      proxy_redirect     off;
+      proxy_set_header   Host $host;
+      proxy_set_header   X-Real-IP $remote_addr;
+
+    }
+
+
+    etag on;
+    gzip on;
+
+    client_max_body_size 2000M;
+    client_body_buffer_size 128K;
+
+    proxy_connect_timeout       600;
+    proxy_send_timeout          600;
+    proxy_read_timeout          600;
+    send_timeout                600;
+    uwsgi_read_timeout          600;
+
+    expires 1d;
+    gzip_disable "msie6";
+    gzip_comp_level 6;
+    gzip_min_length 1100;
+    gzip_buffers 16 8k;
+    gzip_proxied any;
+    gzip_types
+        text/plain
+        text/css
+        text/js
+        text/xml
+        text/javascript
+        application/javascript
+        application/x-javascript
+        application/json
+        application/xml
+        application/rss+xml
+        image/svg+xml;
+
+ }
+    #include /etc/nginx/conf.d/*.conf;
+}
