@@ -17,8 +17,8 @@ services:
     env_file:
       - ./scripts/docker/env/${SET_DOCKER_ENV}/geoserver.env
     environment:
-      - GEONODE_LB_HOST_IP=geonode-rris.biopama.org
-      - GEONODE_LB_PORT=443
+      - GEONODE_LB_HOST_IP=localhost
+      - GEONODE_LB_PORT=80
 
   django:
 #    build:
@@ -46,21 +46,7 @@ services:
       - ./proxy.env
     environment:
       - DEBUG=False
-      - GEONODE_LB_HOST_IP=geonode-rris.biopama.org
-      - GEONODE_LB_PORT=443
-      - SITEURL=https://geonode-rris.biopama.org/
-      - GEOSERVER_LOCATION=http://geoserver4geonode:8080/geoserver/
-      - GEOSERVER_PUBLIC_LOCATION=https://geonode-rris.biopama.org/geoserver/
-      - GEOSERVER_WEB_UI_LOCATION=https://geonode-rris.biopama.org/geoserver/
-      - GEOSERVER_ADMIN_USER=gndadm
-      - GEOSERVER_ADMIN_PASSWORD=RaN6wAGxrSmAEKRu
-      - SITE_HOST_SCHEMA=https
-      - DATABASE_URL=postgresql://d6geonode:Geonode2019!@pgsql-dev2.jrc.it:5432/d6geonode
-      - GEODATABASE_URL=postgis://d6geonode:Geonode2019!@pgsql-dev2.jrc.it:5432/d6geonodegis
-      - DEFAULT_BACKEND_DATASTORE=datastore
-      - ALLOWED_HOSTS=['geonode-rris.biopama.org', 'h05-stg-vm14.ies.jrc.it', 'h05-dev-vm36.ies.jrc.it', 'h05-srv-dbp96.jrc.it', '139.191.147.129', 'pgsql-dev2.jrc.it']
 
-# export ALLOWED_HOSTS="['django', '*', 'geonode-rris.biopama.org', 'geonode-rris.biopama.org:443', 'django', 'geonode']"
 
   geonode:
     build:
