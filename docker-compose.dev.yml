@@ -45,9 +45,9 @@ services:
       - ./proxy.env
     environment:
       - DEBUG=False
-      - GEONODE_LB_HOST_IP=h05-dev-vm36.jrc.it
+      - GEONODE_LB_HOST_IP=localhost
       - GEONODE_LB_PORT=80
-      - SITEURL=http://h05-dev-vm36.jrc.it/
+      - SITEURL=http://localhost/
       - GEOSERVER_LOCATION=http://geoserver4geonode:8080/geoserver/
       - GEOSERVER_PUBLIC_LOCATION=http://geoserver4geonode:8080/geoserver/
       - GEOSERVER_WEB_UI_LOCATION=http://geoserver4geonode:8080/geoserver/
